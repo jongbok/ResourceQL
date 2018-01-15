@@ -2,14 +2,14 @@ const assert = require('assert'),
 	RQL = require('../index');
 
 const ds1 = [
-		{id: 1, name: 'Jone'},
-		{id: 2, name: 'Jeff'},
-		{id: 3, name: 'Sara'},
-		{id: 4, name: 'Jenny'}
+		{id: 1, name: 'Jone', kind: '01'},
+		{id: 2, name: 'Jeff', kind: '02'},
+		{id: 3, name: 'Sara', kind: '01'},
+		{id: 4, name: 'Jenny', kind: '02'}
 	],
 	ds2 = [
-		{id: 2, dept: 'Management'},
-		{id: 3, dept: 'Planning'}
+		{id: 2, dept: 'Management', k: '02'},
+		{id: 3, dept: 'Planning', k: '01'}
 	];
 
 /*describe('Array', function() {
@@ -47,6 +47,16 @@ describe('Main', function(){
 							.execute();
 			assert.equal(result.length, 2);
 		});
+
+		it('test', () => {
+			const result = query.join({
+					'a.id': 'b.id', 
+					'a.kind': 'b.k'
+				})
+				.execute();
+
+			assert.equal(result.length, 1);
+		})
 	});
 });
 
@@ -72,6 +82,10 @@ query = new RQL({
 	.sort({'column1': '$asc', 'column2': '$desc'})
 
 result = query.execute();
+
+join({
+	$type: 'left'
+})
 
 ds1, ds2
 inner join

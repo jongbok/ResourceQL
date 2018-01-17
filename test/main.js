@@ -32,15 +32,6 @@ const ds1 = [
 		}
 	];
 
-/*describe('Array', function() {
-  describe('#indexOf()', function() {
-    it('should return -1 when the value is not present', function() {
-      assert.equal([1,2,3].indexOf(4), -1);
-    });
-  });
-});
-*/
-
 describe('#init', function(){
 	it('must be accessed', () => {
 		assert.ok(!!RQL);
@@ -49,16 +40,12 @@ describe('#init', function(){
 
 
 describe('#join', function(){
-	const query = new RQL({
-				dataset: ds1,
-				alias: 'a'
-			},
-			{
-				dataset: ds2,
-				alias: 'b'
-			});
 
 	describe('#inner', function(){
+		const query = RQL.query({
+			left: { dataset: ds1, alias: 'a'},
+			right: { dataset: ds2, alias: 'b'}
+		});
 
 		it('there are no conditions', () => {
 			const result = query.execute();
@@ -101,6 +88,11 @@ describe('#join', function(){
 	});
 
 	describe('#left', function(){
+		const query = RQL.query({
+			type: 'left',
+			left: { dataset: ds1, alias: 'a'},
+			right: { dataset: ds2, alias: 'b'}
+		});
 
 	});
 });

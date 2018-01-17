@@ -10,7 +10,8 @@ const LEFT = Symbol(),
 	COLUMNS = Symbol(),
 	JOINS = Symbol(),
 	FILTERS = Symbol(),
-	SORTS = Symbol();
+	SORTS = Symbol(),
+	TYPE = Symbol();
 
 const MERGE = Symbol();
 
@@ -47,10 +48,15 @@ const isDataset = ds => {
     	return true;
     };
 
-class RQL{
-	constructor(left, right){
-		this[LEFT] = _.isArray(left) ?  {dataset: _.cloneDeep(left), alias: 'a'} : _.cloneDeep(left);
-		this[RIGHT] = _.isArray(right) ? {dataset: _.cloneDeep(right), alias: 'b'} : _.cloneDeep(right);
+class Query{
+	constructor(options){
+		if(this.constructor === Query)
+			throw new TypeError('Abstract class "Query" cannot be instantiated directly.');
+		
+		this[LEFT] = _.isArray(options.left) ?  
+			{dataset: _.cloneDeep(options.left), alias: 'a'} : _.cloneDeep(options.left);
+		this[RIGHT] = _.isArray(options.right) ? 
+			{dataset: _.cloneDeep(options.right), alias: 'b'} : _.cloneDeep(options.right);
 
 		if(!isDataset(this[LEFT].dataset))
 			throw new Error('The first dataset is not valid!');
@@ -135,15 +141,39 @@ class RQL{
 	}
 }
 
-class Command{
-	constructor(commandes){
-		this.commandes = commandes || [];
+class InnerJoin extends Query {
+
+	constructor(options){
+		super(options);
 	}
+}
 
-	run(){
-		if(this.commandes && this.commandes.length){
+class LeftJoin extends Query {
 
-		}
+	constructor(options){
+		super(options);
+	}	
+}
+
+class RightJoin extends Query {
+
+	constructor(options){
+		super(options);
+	}	
+}
+
+class RQL{
+	static query(options){
+		const type = options.type || 'inner';
+
+		if(type === 'inner')
+			return new InnerJoin(options);
+		if(type === 'left')
+			return new LeftJoin(options);
+		if(type === 'right')
+			return new RightJoin(options);
+		
+		throw new TypeError('there is a unknown option "type"');
 	}
 }
 
